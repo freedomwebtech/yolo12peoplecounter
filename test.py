@@ -4,7 +4,7 @@ from ultralytics import YOLO
 import cvzone
 
 
-model = YOLO('best.pt')
+model = YOLO('yolo12n.pt')
 names=model.names
 
 
@@ -21,9 +21,6 @@ cv2.namedWindow("RGB")
 cv2.setMouseCallback("RGB", RGB)
 frame_count=0
 
-line_y=474
-track_hist={}
-in_count=0
 while True:
     # Read video frame
     ret, frame = cap.read()
@@ -50,14 +47,7 @@ while True:
             cv2.circle(frame,(cx,cy),4,(255,0,0),-1)
             cv2.rectangle(frame,(x1,y1),(x2,y2),(0,255,0),2)
             cv2.putText(frame, name, (x1 + 3, y1 - 7), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255,255,255), 2)
-            if track_id in track_hist:
-                prev_cx,prev_cy=track_hist[track_id]
-                if(prev_cy<line_y<=cy):
-                  in_count+=1
-                  cv2.circle(frame,(cx,cy),4,(255,0,0),-1)
-                  cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,255),2)
-            
-            track_hist[track_id]=(cx,cy)
+           
 
             
 
@@ -65,11 +55,9 @@ while True:
             
         
 
-    cvzone.putTextRect(frame,f'Counter:-{in_count}',(20,60),2,2)   
-    cv2.line(frame,(0,line_y),(frame.shape[1],line_y),(255,255,255),2)
+
     # Show the frame
     cv2.imshow("RGB", frame)
-    print(track_hist)
     # Press ESC to exit
     if cv2.waitKey(0) & 0xFF == 27:
         break
